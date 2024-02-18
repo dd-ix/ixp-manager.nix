@@ -242,12 +242,12 @@ in
             description = mdDoc "Name of the MySQL user.";
           };
 
-          DB_PASSWORD = mkOption {
-            type = types.str;
-            description = mdDoc ''
-              Password of the MySQL user. Use the `environmentFile` option to prevent the password from being written world-readable to the Nix-Store.
-            '';
-          };
+          # DB_PASSWORD = mkOption {
+          #   type = types.str;
+          #   description = mdDoc ''
+          #     Password of the MySQL user. Use the `environmentFile` option to prevent the password from being written world-readable to the Nix-Store.
+          #   '';
+          # };
         };
       };
       description = lib.mdDoc ''
@@ -416,18 +416,19 @@ in
           EnvironmentFile = mkIf (cfg.environmentFile != null) [ cfg.environmentFile ];
           User = cfg.user;
           Group = cfg.group;
-          ExecStartPre = mkIf cfg.createDatabaseLocally [
-            "!${pkgs.writeShellScript "librenms-db-init" ''
-          DB_PASSWORD=$(${pkgs.envsubst}/bin/envsubst -i ${configFile} | grep DB_PASSWORD | sed s/DB_PASSWORD=//g | sed s/\"//g)
-          echo "ALTER USER ${cfg.settings.DB_USERNAME}@localhost IDENTIFIED WITH caching_sha2_password BY '$DB_PASSWORD';" | ${pkgs.mysql80}/bin/mysql -u root
-        ''}"
-          ];
+          #ExecStartPre = mkIf cfg.createDatabaseLocally [
+          #  "!${pkgs.writeShellScript "librenms-db-init" ''
+          #DB_PASSWORD=$(${pkgs.envsubst}/bin/envsubst -i ${configFile} | grep DB_PASSWORD | sed s/DB_PASSWORD=//g | sed s/\"//g)
+          #echo "ALTER USER ${cfg.settings.DB_USERNAME}@localhost IDENTIFIED WITH caching_sha2_password BY \"''$DB_PASSWORD\"";" | ${pkgs.mysql80}/bin/mysql -u root
+        #''}"
+         # ];
         };
         script = ''
           set -e
 
           # config setup
           ${pkgs.envsubst}/bin/envsubst -i ${configFile} -o ${cfg.dataDir}/.env.generated
+          echo DB_PASSWORD=''$DB_PASSWORD >>  ${cfg.dataDir}/.env.generated
 
           # init custom config options
           if [[ ! -s ${cfg.dataDir}/custom.php ]]; then
@@ -461,7 +462,7 @@ in
             ${artisanWrapper}/bin/ixp-manager-artisan migrate --force
 
             # regenerate views
-            mysql -h $DB_HOST -u $DB_USERNAME -p$DB_PASSWORD $DB_DATABASE < ${package}/tools/sql/views.sql
+            mysql -h ''$DB_HOST -u ''$DB_USERNAME -p''$DB_PASSWORD ''$DB_DATABASE < ${package}/tools/sql/views.sql
 
             # version file empty --> initial installation
             if [[ ! -s ${cfg.dataDir}/version ]]; then
@@ -473,7 +474,7 @@ in
               HASH_PW=$( ${phpPackage}/bin/php -r "echo escapeshellarg( crypt( '$IXPM_ADMIN_PW', sprintf( '\$2a\$%02d\$%s', 10, substr( '$ADMIN_PW_SALT', 0, 22 ) ) ) );" )
 
               # snippet from https://docs.ixpmanager.org/install/manually/
-              mysql -h $DB_HOST -u $DB_USERNAME "-p$DB_PASSWORD" $DB_DATABASE <<END_SQL
+              mysql -h ''$DB_HOST -u ''$DB_USERNAME "-p''$DB_PASSWORD" ''$DB_DATABASE <<END_SQL
                 INSERT INTO infrastructure ( name, shortname, isPrimary, created_at, updated_at )
                     VALUES ( 'Infrastructure #1', '#1', 1, NOW(), NOW() );
                 SET @infraid = LAST_INSERT_ID();
