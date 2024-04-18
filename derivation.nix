@@ -1,5 +1,6 @@
 { lib
 , fetchFromGitHub
+, fetchpatch
 , php82
 , dataDir ? "/var/lib/ixp-manager"
 }:
@@ -24,6 +25,11 @@ phpPackage.buildComposerProject rec {
 
   patches = [
     ./cypher-config.patch
+    (fetchpatch {
+      name = "fix-landingpage-logo.path";
+      url = "https://github.com/MarcelCoding/IXP-Manager/commit/015f4ff8e6c5f7c45e1b2544620148909b29802f.patch";
+      hash = "sha256-N0o6ohtSBMgcdp3F+cbQSF4rzJJhJDuE1d4JsopLbqY=";
+    })
   ];
 
   installPhase = ''

@@ -420,8 +420,8 @@ in
           #  "!${pkgs.writeShellScript "librenms-db-init" ''
           #DB_PASSWORD=$(${pkgs.envsubst}/bin/envsubst -i ${configFile} | grep DB_PASSWORD | sed s/DB_PASSWORD=//g | sed s/\"//g)
           #echo "ALTER USER ${cfg.settings.DB_USERNAME}@localhost IDENTIFIED WITH caching_sha2_password BY \"''$DB_PASSWORD\"";" | ${pkgs.mysql80}/bin/mysql -u root
-        #''}"
-         # ];
+          #''}"
+          # ];
         };
         script = ''
           set -e
