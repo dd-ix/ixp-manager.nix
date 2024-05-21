@@ -523,9 +523,9 @@ in
         path = [ pkgs.rrdtool ];
         startAt = "*:0/1";
         preStart = ''
-          ${artisanWrapper}/bin/ixp-manager-artisan grapher:generate-configuration -B mrtg -O /var/lib/mrtg/ixpmanager.cfg
-          sed -i '/RunAsDaemon/d' /var/lib/mrtg/ixpmanager.cfg
-          echo "LibAdd: ${pkgs.rrdtool}/lib/perl5/site_perl" >> /var/lib/mrtg/ixpmanager.cfg
+          #${artisanWrapper}/bin/ixp-manager-artisan grapher:generate-configuration -B mrtg -O /var/lib/mrtg/ixpmanager.cfg
+          #sed -i '/RunAsDaemon/d' /var/lib/mrtg/ixpmanager.cfg
+          #echo "LibAdd: ${pkgs.rrdtool}/lib/perl5/site_perl" >> /var/lib/mrtg/ixpmanager.cfg
         '';
         serviceConfig = {
           Type = "simple";
