@@ -526,7 +526,6 @@ in
           ${artisanWrapper}/bin/ixp-manager-artisan grapher:generate-configuration -B mrtg -O /var/lib/mrtg/ixpmanager.cfg
           sed -i '/RunAsDaemon/d' /var/lib/mrtg/ixpmanager.cfg
           echo "LibAdd: ${pkgs.rrdtool}/lib/perl5/site_perl" >> /var/lib/mrtg/ixpmanager.cfg
-          echo "@main::DEBUG=qw(snpo);" >> /var/lib/mrtg/ixpmanager.cfg
         '';
         serviceConfig = {
           Type = "simple";
