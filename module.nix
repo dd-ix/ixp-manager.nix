@@ -521,7 +521,7 @@ in
         after = [ "ixp-manager-setup.service" ];
         environment.LANG = "C";
         path = [ pkgs.rrdtool ];
-        startAt = "*:0/5";
+        startAt = "*:0/1";
         preStart = ''
           ${artisanWrapper}/bin/ixp-manager-artisan grapher:generate-configuration -B mrtg -O /var/lib/mrtg/ixpmanager.cfg
           sed -i '/RunAsDaemon/d' /var/lib/mrtg/ixpmanager.cfg
