@@ -526,12 +526,13 @@ in
           ${artisanWrapper}/bin/ixp-manager-artisan grapher:generate-configuration -B mrtg -O /var/lib/mrtg/ixpmanager.cfg
           sed -i '/RunAsDaemon/d' /var/lib/mrtg/ixpmanager.cfg
           echo "LibAdd: ${pkgs.rrdtool}/lib/perl5/site_perl" >> /var/lib/mrtg/ixpmanager.cfg
+          echo "@main::DEBUG=qw(snpo);" >> /var/lib/mrtg/ixpmanager.cfg
         '';
         serviceConfig = {
           Type = "simple";
           RuntimeDirectory = "mrtg";
           StateDirectory = "mrtg";
-          ExecStart = "${pkgs.mrtg}/bin/mrtg /var/lib/mrtg/ixpmanager.cfg --lock-file=/run/mrtg/mrtg.lock --confcache-file=/var/lib/mrtg/mrtg.ok --debug=\"base\"";
+          ExecStart = "${pkgs.mrtg}/bin/mrtg /var/lib/mrtg/ixpmanager.cfg --lock-file=/run/mrtg/mrtg.lock --confcache-file=/var/lib/mrtg/mrtg.ok --debug=\"base\" --logging /var/lib/mrtg/log.log";
           User = config.services.ixp-manager.user;
           Group = config.services.ixp-manager.group;
         };
