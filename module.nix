@@ -532,7 +532,7 @@ in
           Type = "simple";
           RuntimeDirectory = "mrtg";
           StateDirectory = "mrtg";
-          ExecStart = "${pkgs.mrtg}/bin/mrtg /var/lib/mrtg/ixpmanager.cfg --lock-file=/run/mrtg/mrtg.lock --confcache-file=/var/lib/mrtg/mrtg.ok --debug=\"base\" --logging /var/lib/mrtg/log.log";
+          ExecStart = "${pkgs.mrtg}/bin/mrtg /var/lib/mrtg/ixpmanager.cfg --lock-file=/run/mrtg/mrtg.lock --confcache-file=/var/lib/mrtg/mrtg.ok --debug=\"base\"";
           User = config.services.ixp-manager.user;
           Group = config.services.ixp-manager.group;
         };
