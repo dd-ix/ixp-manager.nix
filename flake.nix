@@ -24,7 +24,7 @@
       };
 
       nixosModules = rec {
-        ixp-manager = import ./module.nix;
+        ixp-manager = ./module.nix;
         default = ixp-manager;
       };
     };
