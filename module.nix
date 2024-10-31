@@ -29,6 +29,8 @@ let
     IXP_IRRDB_BGPQ3_PATH = "${pkgs.bgpq3}/bin/bgpq3";
     GRAPHER_CACHE_ENABLED = "true";
     GRAPHER_BACKENDS = if cfg.enableMRTG then "mrtg" else "dummy";
+    # since 6.4.0
+    TELESCOPE_ENABLED = "false";
   } // cfg.settings;
 
   phpPackage = package.phpPackage.buildEnv {

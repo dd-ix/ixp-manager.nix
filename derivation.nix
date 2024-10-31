@@ -7,20 +7,19 @@
 
 let
   phpPackage = php82;
-
 in
 phpPackage.buildComposerProject rec {
   pname = "ixp-manager";
-  version = "6.3.1";
+  version = "6.4.1";
 
   src = fetchFromGitHub {
     owner = "inex";
-    repo = pname;
+    repo = "IXP-Manager";
     rev = "v${version}";
-    sha256 = "sha256-uUTJr7xIDDV6GrzLwXOv3sQ1rU8L1iofTFCKWatMjPs=";
+    sha256 = "sha256-Hgjem/3z3FXWklZTbN0Y+gJEeL6QGGePEd70qC28Ktg=";
   };
 
-  vendorHash = "sha256-e9cEWetCDNDcmsBWlOUW1Ek+oiNBgygWfJXg9hhKjH0=";
+  vendorHash = "sha256-l5DHdjMZT5QfcVDyk02MR0y/yEfZamRwmE9D/ObIEuk=";
   composerStrictValidation = false;
 
   patches = [
