@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -20,7 +20,7 @@
         }
       ) // {
       overlays.default = _: prev: {
-        ixp-manager = self.packages."${prev.system}".ixp-manager;
+        inherit (self.packages."${prev.system}") ixp-manager;
       };
 
       nixosModules = rec {
