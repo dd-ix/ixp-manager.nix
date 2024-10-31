@@ -23,7 +23,7 @@ phpPackage.buildComposerProject rec {
   composerStrictValidation = false;
 
   patches = [
-    ./cypher-config.patch
+    ./cipher-config.patch
     (fetchpatch {
       name = "fix-landingpage-logo.path";
       url = "https://github.com/MarcelCoding/IXP-Manager/commit/015f4ff8e6c5f7c45e1b2544620148909b29802f.patch";
