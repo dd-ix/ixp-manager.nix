@@ -58,7 +58,7 @@ let
   };
 
   artisanWrapper = pkgs.writeShellScriptBin "ixp-manager-artisan" ''
-    cd ${package}
+    cd ${package}/share/php/ixp-manager
     sudo=exec
     if [[ "$USER" != ${cfg.user} ]]; then
       sudo='exec /run/wrappers/bin/sudo -u ${cfg.user}'
@@ -314,7 +314,7 @@ in
         virtualHosts."${cfg.hostname}" = mkMerge [
           cfg.nginx
           {
-            root = mkForce "${package}/public";
+            root = mkForce "${package}/share/php/ixp-manager/public";
             locations."/" = {
               index = "index.php";
               tryFiles = "$uri $uri/ /index.php?$query_string";
@@ -434,7 +434,7 @@ in
 
           # init custom config options
           if [[ ! -s ${cfg.dataDir}/custom.php ]]; then
-            cat ${package}/config/custom.php.dist > ${cfg.dataDir}/custom.php
+            cat ${package}/share/php/ixp-manager/config/custom.php.dist > ${cfg.dataDir}/custom.php
           fi
 
           # init .env file if it is empty
@@ -464,7 +464,7 @@ in
             ${artisanWrapper}/bin/ixp-manager-artisan migrate --force
 
             # regenerate views
-            mysql -h ''$DB_HOST -u ''$DB_USERNAME -p''$DB_PASSWORD ''$DB_DATABASE < ${package}/tools/sql/views.sql
+            mysql -h ''$DB_HOST -u ''$DB_USERNAME -p''$DB_PASSWORD ''$DB_DATABASE < ${package}/share/php/ixp-manager/tools/sql/views.sql
 
             # version file empty --> initial installation
             if [[ ! -s ${cfg.dataDir}/version ]]; then
