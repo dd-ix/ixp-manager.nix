@@ -8,7 +8,7 @@
 let
   phpPackage = php82;
 in
-phpPackage.buildComposerProject rec {
+phpPackage.buildComposerProject2 rec {
   pname = "ixp-manager";
   version = "6.4.1";
 
@@ -19,8 +19,10 @@ phpPackage.buildComposerProject rec {
     sha256 = "sha256-Hgjem/3z3FXWklZTbN0Y+gJEeL6QGGePEd70qC28Ktg=";
   };
 
-  vendorHash = "sha256-l5DHdjMZT5QfcVDyk02MR0y/yEfZamRwmE9D/ObIEuk=";
+  # fails because deprecated license identifier was used 🙄
   composerStrictValidation = false;
+
+  vendorHash = "sha256-NZqljwQOULuTkA6hZ4+71qD0VN8RFVZTi1y8Cq1cBW0=";
 
   patches = [
     ./cipher-config.patch
@@ -34,15 +36,14 @@ phpPackage.buildComposerProject rec {
   installPhase = ''
     runHook preInstall
 
-    mv $out/share/php/ixp-manager/* $out
-    rm -r $out/share
+    ixp_manager_out="$out/share/php/ixp-manager"
 
-    rm -rf $out/bootstrap/cache $out/storage $out/.env
-    ln -s ${dataDir}/.env $out/.env
-    ln -s ${dataDir}/storage $out/storage
-    ln -s ${dataDir}/cache $out/bootstrap/cache
-    ln -s ${dataDir}/skin $out/resources/skins/custom
-    ln -s ${dataDir}/custom.php $out/config/custom.php
+    rm -r $ixp_manager_out/bootstrap/cache $ixp_manager_out/storage
+    ln -s ${dataDir}/.env $ixp_manager_out/.env
+    ln -s ${dataDir}/storage $ixp_manager_out/storage
+    ln -s ${dataDir}/cache $ixp_manager_out/bootstrap/cache
+    ln -s ${dataDir}/skin $ixp_manager_out/resources/skins/custom
+    ln -s ${dataDir}/custom.php $ixp_manager_out/config/custom.php
 
     runHook postInstall
   '';
