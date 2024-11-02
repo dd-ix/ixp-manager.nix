@@ -2,6 +2,11 @@
 
 Nix Module for [IXP-Manager](https://www.ixpmanager.org/).
 
+
+Forked from:
+- <https://github.com/SON-IX-NET/infra/blob/main/packages/ixp-manager.nix>
+- <https://github.com/SON-IX-NET/infra/blob/main/modules/ixp-manager.nix>
+
 ## Usage
 
 ```nix
