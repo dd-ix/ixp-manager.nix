@@ -1,12 +1,12 @@
 { lib
 , fetchFromGitHub
 , fetchpatch
-, php81
+, php82
 , dataDir ? "/var/lib/ixp-manager"
 }:
 
 let
-  phpPackage = php81;
+  phpPackage = php82;
 in
 phpPackage.buildComposerProject rec {
   pname = "ixp-manager";
