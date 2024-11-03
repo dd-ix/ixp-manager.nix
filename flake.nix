@@ -1,6 +1,7 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # buildComposerProject2: requires backport
+    nixpkgs.url = "github:NuschtOS/nuschtpkgs/backports-24.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -14,7 +15,7 @@
         in
         {
           packages = rec {
-            ixp-manager = pkgs.callPackage ./derivation.nix { };
+            ixp-manager = pkgs.callPackage ./package.nix { };
             default = ixp-manager;
           };
         }
