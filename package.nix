@@ -22,7 +22,7 @@ phpPackage.buildComposerProject2 rec {
   # fails because deprecated license identifier was used 🙄
   composerStrictValidation = false;
 
-  vendorHash = "sha256-vIwO9NX+847PvEw/z0OUg0egWcoEJAVRWF8kfVuIib8=";
+  vendorHash = "sha256-P7gSGyBgrSiDN7/EeBl1TV2lFvEMTEcRG9BD9UT7Ri0=";
 
   patches = [
     ./cipher-config.patch
