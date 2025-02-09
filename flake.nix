@@ -1,7 +1,6 @@
 {
   inputs = {
-    # buildComposerProject2: requires backport
-    nixpkgs.url = "github:NuschtOS/nuschtpkgs/backports-24.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
