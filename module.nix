@@ -34,7 +34,7 @@ let
   } // cfg.settings;
 
   phpPackage = package.phpPackage.buildEnv {
-    extensions = ({ enabled, all }: enabled ++ (with all; [
+    extensions = { enabled, all }: enabled ++ (with all; [
       intl
       snmp
       curl
@@ -48,9 +48,10 @@ let
       ds
     ] ++ optionals cfg.enableMRTG [
       rrd
-    ]));
+    ]);
     extraConfig = ''
       log_errors = on
+      display_errors = on
       post_max_size = 100M
       upload_max_filesize = 100M
       date.timezone = "${config.time.timeZone}"
@@ -110,14 +111,6 @@ in
       default = false;
       description = mdDoc ''
         Enable MRTG and configure it with the IXP-Manager.
-      '';
-    };
-
-    createDatabaseLocally = mkOption {
-      type = types.bool;
-      default = false;
-      description = mdDoc ''
-        Create the database and database user locally.
       '';
     };
 
@@ -288,11 +281,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions = [{
-      assertion = cfg.createDatabaseLocally -> cfg.settings.DB_HOST == "localhost";
-      message = "The database host must be \"localhost\" if services.ixp-manager.createDatabaseLocally is set to true.";
-    }];
-
     services.ixp-manager.settings = mkIf cfg.enableMRTG {
       GRAPHER_BACKEND_MRTG_DBTYPE = "rrd";
       GRAPHER_BACKEND_MRTG_WORKDIR = "/var/lib/mrtg";
@@ -328,9 +316,8 @@ in
       };
 
       phpfpm.pools.ixp-manager = {
-        user = cfg.user;
-        group = cfg.group;
-        phpPackage = phpPackage;
+        inherit (cfg) user group;
+        inherit phpPackage;
         settings = {
           "listen.mode" = "0660";
           "listen.owner" = config.services.nginx.user;
@@ -343,19 +330,6 @@ in
           "pm.max_spare_servers" = 4;
           "pm.max_requests" = 500;
         };
-      };
-
-      mysql = mkIf cfg.createDatabaseLocally {
-        enable = true;
-        package = pkgs.mysql80;
-        settings.mysqld.log_bin_trust_function_creators = 1;
-        ensureDatabases = [ cfg.settings.DB_DATABASE ];
-        ensureUsers = [
-          {
-            name = cfg.settings.DB_USERNAME;
-            ensurePermissions = { "${cfg.settings.DB_DATABASE}.*" = "ALL PRIVILEGES"; };
-          }
-        ];
       };
 
       redis.servers.ixp-manager = {
@@ -418,12 +392,6 @@ in
           EnvironmentFile = mkIf (cfg.environmentFile != null) [ cfg.environmentFile ];
           User = cfg.user;
           Group = cfg.group;
-          #ExecStartPre = mkIf cfg.createDatabaseLocally [
-          #  "!${pkgs.writeShellScript "librenms-db-init" ''
-          #DB_PASSWORD=$(${pkgs.envsubst}/bin/envsubst -i ${configFile} | grep DB_PASSWORD | sed s/DB_PASSWORD=//g | sed s/\"//g)
-          #echo "ALTER USER ${cfg.settings.DB_USERNAME}@localhost IDENTIFIED WITH caching_sha2_password BY \"''$DB_PASSWORD\"";" | ${pkgs.mysql80}/bin/mysql -u root
-          #''}"
-          # ];
         };
         script = ''
           set -e
@@ -464,7 +432,7 @@ in
             ${artisanWrapper}/bin/ixp-manager-artisan migrate --force
 
             # regenerate views
-            mysql -h ''$DB_HOST -u ''$DB_USERNAME -p''$DB_PASSWORD ''$DB_DATABASE < ${package}/share/php/ixp-manager/tools/sql/views.sql
+            mysql -h ''$DB_HOST -u ''$DB_USERNAME -p''$DB_PASSWORD ''$DB_DATABASE < ${package}/share/php/ixp-manager/resources/views/database/views.foil.sql
 
             # version file empty --> initial installation
             if [[ ! -s ${cfg.dataDir}/version ]]; then
