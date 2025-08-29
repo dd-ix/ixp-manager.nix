@@ -1,36 +1,30 @@
 { lib
 , fetchFromGitHub
-, fetchpatch
-, php82
+, php84
 , dataDir ? "/var/lib/ixp-manager"
 }:
 
 let
-  phpPackage = php82;
+  phpPackage = php84;
 in
 phpPackage.buildComposerProject2 rec {
   pname = "ixp-manager";
-  version = "6.4.2";
+  version = "7.0.0";
 
   src = fetchFromGitHub {
     owner = "inex";
     repo = "IXP-Manager";
     rev = "v${version}";
-    sha256 = "sha256-/bd7AYPBQ4hZS45kbtCmpILroiYIrcqnivoDRTwYxYI=";
+    sha256 = "sha256-sbsgtozrWawAsg3aEH9uKbiTxuaZk0MBzrZQwDGttZk=";
   };
 
   # fails because deprecated license identifier was used 🙄
   composerStrictValidation = false;
 
-  vendorHash = "sha256-P7gSGyBgrSiDN7/EeBl1TV2lFvEMTEcRG9BD9UT7Ri0=";
+  vendorHash = "sha256-wfsosuMlJJUwlLKroJZI2Y8rg24WY71ldpPDCgpR59A=";
 
   patches = [
     ./cipher-config.patch
-    (fetchpatch {
-      name = "fix-landingpage-logo.path";
-      url = "https://github.com/MarcelCoding/IXP-Manager/commit/015f4ff8e6c5f7c45e1b2544620148909b29802f.patch";
-      hash = "sha256-N0o6ohtSBMgcdp3F+cbQSF4rzJJhJDuE1d4JsopLbqY=";
-    })
   ];
 
   installPhase = ''
