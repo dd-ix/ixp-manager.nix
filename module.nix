@@ -396,6 +396,10 @@ in
         script = ''
           set -e
 
+          # clear cache before, artisan does not want to start with broken cache
+          rm -r ${cfg.dataDir}/cache/*
+          echo "${package.version}" > ${cfg.dataDir}/version
+
           # config setup
           ${pkgs.envsubst}/bin/envsubst -i ${configFile} -o ${cfg.dataDir}/.env.generated
           echo DB_PASSWORD=''$DB_PASSWORD >>  ${cfg.dataDir}/.env.generated
