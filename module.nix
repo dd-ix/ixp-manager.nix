@@ -303,14 +303,24 @@ in
           cfg.nginx
           {
             root = mkForce "${package}/share/php/ixp-manager/public";
-            locations."/" = {
-              index = "index.php";
-              tryFiles = "$uri $uri/ /index.php?$query_string";
+            locations = {
+              "/" = {
+                index = "index.php";
+                tryFiles = "$uri $uri/ /index.php?$query_string";
+              };
+              "/admin/" = {
+                extraConfig = ''
+                  # only allow vpn
+                  allow 2a01:7700:80b0:e000::/64;
+                  deny all;
+                '';
+                tryFiles = "$uri $uri/ /index.php?$query_string";
+              };
+              "~ .php$".extraConfig = ''
+                fastcgi_pass unix:${config.services.phpfpm.pools."ixp-manager".socket};
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+              '';
             };
-            locations."~ .php$".extraConfig = ''
-              fastcgi_pass unix:${config.services.phpfpm.pools."ixp-manager".socket};
-              fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            '';
           }
         ];
       };
