@@ -7,21 +7,21 @@
 let
   phpPackage = php84;
 in
-phpPackage.buildComposerProject2 rec {
+phpPackage.buildComposerProject2 (finalAttrs: {
   pname = "ixp-manager";
-  version = "7.1.0";
+  version = "7.2.0";
 
   src = fetchFromGitHub {
     owner = "inex";
     repo = "IXP-Manager";
-    rev = "v${version}";
-    sha256 = "sha256-lEIIm48p3JOqeVwFl3LYEXcIYa6A4nc2QnT/tq5WDRA=";
+    tag = "v${finalAttrs.version}";
+    sha256 = "sha256-wrLWAd9GdNqzkmZnjzZ0CNaAXNaeXVvmpaRiF7uleSM=";
   };
 
   # fails because deprecated license identifier was used 🙄
   composerStrictValidation = false;
 
-  vendorHash = "sha256-/MHJC5DNbF914FtyaCm/sLleSIlULRXvfK/xr8PH+R0=";
+  vendorHash = "sha256-Kcv52Fow/XTZKxmA9XX6ICdFJhm74QDn3tyt+ho8JT4=";
 
   patches = [
     ./cipher-config.patch
@@ -51,4 +51,4 @@ phpPackage.buildComposerProject2 rec {
     # maintainers = teams.wdz.members;
     platforms = platforms.linux;
   };
-}
+})

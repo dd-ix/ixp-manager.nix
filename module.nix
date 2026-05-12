@@ -5,7 +5,7 @@ with lib;
 let
   cfg = config.services.ixp-manager;
   package = cfg.package.override {
-    dataDir = cfg.dataDir;
+    inherit (cfg) dataDir;
   };
 
   enqoute = x: "\"${x}\"";
@@ -114,12 +114,7 @@ in
       '';
     };
 
-    package = mkOption {
-      default = pkgs.ixp-manager;
-      defaultText = literalExpression "pkgs.ixp-manager";
-      type = types.package;
-      description = mdDoc "Package to use for the IXP-Manager.";
-    };
+    package = mkPackageOption pkgs "ixp-manager" { };
 
     init = {
       admin = {
@@ -299,26 +294,30 @@ in
     services = {
       nginx = {
         enable = true;
-        virtualHosts."${cfg.hostname}" = mkMerge [
+        virtualHosts.${cfg.hostname} = mkMerge [
           cfg.nginx
           {
             root = mkForce "${package}/share/php/ixp-manager/public";
             locations = {
               "/" = {
-                index = "index.php";
                 tryFiles = "$uri $uri/ /index.php?$query_string";
+                extraConfig = ''
+                  add_header X-Frame-Options DENY;
+                '';
               };
               "/admin/" = {
                 extraConfig = ''
                   # only allow vpn
                   allow 2a01:7700:80b0:e000::/64;
                   deny all;
+                  add_header X-Frame-Options DENY;
                 '';
                 tryFiles = "$uri $uri/ /index.php?$query_string";
               };
               "~ .php$".extraConfig = ''
                 fastcgi_pass unix:${config.services.phpfpm.pools."ixp-manager".socket};
                 fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                add_header X-Frame-Options DENY;
               '';
             };
           }
