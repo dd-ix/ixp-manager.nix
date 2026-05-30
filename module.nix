@@ -395,7 +395,7 @@ in
           ++ (optional (cfg.settings.DB_HOST == "localhost") "mysql.service");
         wantedBy = [ "multi-user.target" ];
         restartTriggers = [ package configFile cfg.environmentFile ];
-        path = [ pkgs.mysql80 pkgs.gnused pkgs.gnugrep pkgs.openssl ];
+        path = [ pkgs.mysql84 pkgs.gnused pkgs.gnugrep pkgs.openssl ];
         serviceConfig = {
           Type = "oneshot";
           RemainAfterExit = true;
