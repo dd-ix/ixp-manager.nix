@@ -9,19 +9,19 @@ let
 in
 phpPackage.buildComposerProject2 (finalAttrs: {
   pname = "ixp-manager";
-  version = "7.2.0";
+  version = "7.3.0";
 
   src = fetchFromGitHub {
     owner = "inex";
     repo = "IXP-Manager";
     tag = "v${finalAttrs.version}";
-    sha256 = "sha256-wrLWAd9GdNqzkmZnjzZ0CNaAXNaeXVvmpaRiF7uleSM=";
+    sha256 = "sha256-JXFDMZFv5Gl+c11EN0uzJtYAo1jO0iBGaLdZqzYu5iA=";
   };
 
   # fails because deprecated license identifier was used 🙄
   composerStrictValidation = false;
 
-  vendorHash = "sha256-tNUWfUn6WxQPunZNKYrb5BhUqw3ieHRPvkjFTO5iZLM=";
+  vendorHash = "sha256-QqmTCaep5gCSySEnbr7SYQEVQCjVo7zWVhvYfw0ZphE=";
 
   patches = [
     ./cipher-config.patch
