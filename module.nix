@@ -308,9 +308,6 @@ in
               };
               "/admin/" = {
                 extraConfig = ''
-                  # only allow vpn
-                  allow 2a01:7700:80b0:e000::/64;
-                  deny all;
                   add_header X-Frame-Options DENY;
                 '';
                 tryFiles = "$uri $uri/ /index.php?$query_string";
